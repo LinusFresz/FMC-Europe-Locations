@@ -14,7 +14,11 @@ class DBInit:
             print(db_not_found_string)
             sys.exit()
 
-from static.config import credentials
+try:
+    from static.config import credentials
+except ModuleNotFoundError:
+    print("Database configuration file 'static/config.py' not found! Please use 'static/config_example.py' to create 'static/config.py' with database credentials. Database credentials are being ignored by Git and won't be commited.")
+    sys.exit()
 from db.Database import Database
 
 WCA_Database = Database(

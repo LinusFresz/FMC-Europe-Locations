@@ -1,5 +1,6 @@
 ### Data extraction of WCIF and registration file (if used).
 import os
+import sys
 import requests
 import json
 
