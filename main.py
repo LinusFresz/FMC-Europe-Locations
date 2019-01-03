@@ -44,9 +44,14 @@ competitor_information_wca = sorted(sorted(sorted(competitor_information_wca, ke
 # Group competitors by registered location (information given by registration information)
 competitors_per_location = {}
 for competitor in competitor_information_wca:
+    found_location = False
     for locations in registered_locations:
         if ftfy.fix_text(competitor['comments']) == ftfy.fix_text(locations[1]):
             competitor['comments'] = locations[0] + ' - ' + competitor['comments']
+            found_location = True
+            break
+    if not found_location:
+        competitor['comments'] = 'unknown location - ' + competitor['comments']
     if competitor['comments'] not in competitors_per_location:
         competitors_per_location.update({competitor['comments']: []})
     competitors_per_location[competitor['comments']].append(competitor)
@@ -100,7 +105,7 @@ for location in competitors_per_location:
     table = pandas.DataFrame(data=competitors_per_location[location])
     table = table.fillna(' ')
     
-    table = table[['personId', 'name', 'country', 'single', 'average', 'comments']]
+    table = table[['personId', 'name', 'country', 'single', 'average']]
     print(location)
     print(table)
     print('')
