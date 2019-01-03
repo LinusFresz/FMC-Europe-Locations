@@ -3,6 +3,7 @@ import os
 import sys
 import requests
 import json
+import getpass
 
 from static import config as credentials
 
@@ -24,32 +25,33 @@ def get_registrations_from_wcif(wca_json, countries):
             for role in registrations['roles']:
                 competitor_role = ''.join([competitor_role, role.replace('delegate', 'WCA DELEGATE').upper(), ','])
             competitor_role = competitor_role[:-1]
-        if registrations['registration']['comments']:
-            comments = registrations['registration']['comments']
-        for competitor_events in registrations['registration']['eventIds']:
-            registered_events += (competitor_events,)
-        email = registrations['email']
+        if registrations['registration']:
+            if registrations['registration']['comments']:
+                comments = registrations['registration']['comments']
+            for competitor_events in registrations['registration']['eventIds']:
+                registered_events += (competitor_events,)
+            email = registrations['email']
 
-        information = {
-                'name': registrations['name'].split(' (')[0].strip(),
-                'personId': registrations['wcaId'],
-                'dob': registrations['birthdate'],
-                'gender': registrations['gender'],
-                'country': comp_country,
-                'mail': email,
-                'role': competitor_role,
-                'guests': str(registrations['registration']['guests']),
-                #'registered_events': registered_events,
-                'registration_id': registration_id,
-                'comments': comments
-                }
+            information = {
+                    'name': registrations['name'].split(' (')[0].strip(),
+                    'personId': registrations['wcaId'],
+                    'dob': registrations['birthdate'],
+                    'gender': registrations['gender'],
+                    'country': comp_country,
+                    'mail': email,
+                    'role': competitor_role,
+                    'guests': str(registrations['registration']['guests']),
+                    #'registered_events': registered_events,
+                    'registration_id': registration_id,
+                    'comments': comments
+                    }
 
-        wca_ids += (registrations['wcaId'],)
-        if not registrations['wcaId']:
-            information.update({'personId': ''})
-        if registrations['registration']['status'] == 'accepted':
-            competitor_information_wca.append(information)
-            registration_id += 1
+            wca_ids += (registrations['wcaId'],)
+            if not registrations['wcaId']:
+                information.update({'personId': ''})
+            if registrations['registration']['status'] == 'accepted':
+                competitor_information_wca.append(information)
+                registration_id += 1
             
     return (competitor_information_wca, wca_ids)
 

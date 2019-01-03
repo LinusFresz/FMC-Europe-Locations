@@ -17,7 +17,7 @@ from wca_api import get_registrations_from_wcif, wca_registration, get_wca_info,
 from wca_db import get_results_from_wca_export
 
 # Hard coded competition name, because script will only be used for FMC Europe XY
-competition_name = "BerlinWinterCubing2019"
+competition_name = "FMCEurope2019"
 competition_name_stripped = competition_name.strip()
 
 registered_locations = list(csv.reader(open('locations.txt', 'r'), delimiter='\t'))
@@ -44,9 +44,14 @@ competitor_information_wca = sorted(sorted(sorted(competitor_information_wca, ke
 # Group competitors by registered location (information given by registration information)
 competitors_per_location = {}
 for competitor in competitor_information_wca:
+    found_location = False
     for locations in registered_locations:
         if ftfy.fix_text(competitor['comments']) == ftfy.fix_text(locations[1]):
             competitor['comments'] = locations[0] + ' - ' + competitor['comments']
+            found_location = True
+            break
+    if not found_location:
+        competitor['comments'] = 'unknown location - ' + competitor['comments']
     if competitor['comments'] not in competitors_per_location:
         competitors_per_location.update({competitor['comments']: []})
     competitors_per_location[competitor['comments']].append(competitor)
@@ -95,13 +100,18 @@ output_json = json.dumps(competitors_per_location_extended, indent=4)
 with open(output_registration + '.json', 'w') as registration_file:
     print(output_json, file=registration_file)
 
+print('Locations:')
 for location in competitors_per_location:
     table = pandas.DataFrame(data=competitors_per_location[location])
     table = table.fillna(' ')
     
-    table = table[['personId', 'name', 'country', 'single', 'average', 'comments']]
-    #print(table)
+    table = table[['personId', 'name', 'country', 'single', 'average']]
+    print(location)
+    print(table)
+    print('')
 
+print('')
+print('All registrations:')
 table = pandas.DataFrame(data=competitor_information_wca)
 table = table.fillna(' ')
 table = table[['personId', 'name', 'country', 'single', 'average', 'comments']]
