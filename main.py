@@ -67,6 +67,7 @@ for location in competitors_per_location:
         emails[competitor['comments']].append(competitor['mail'])
 
 competitors_per_location_extended = competitors_per_location
+
 secret_information = ['dob', 'gender', 'mail', 'role', 'guests']
 for location in competitors_per_location:
     for competitor in competitors_per_location[location]:
@@ -84,22 +85,23 @@ for location in competitors_per_location:
 ### Write results to files
 # Public registration information
 output_registration = competition_name + '/' + competition_name_stripped + 'Registrations'
-with open(output_registration + '.txt', 'w') as registration_file:
-    print(competitor_information_wca, file=registration_file)
+with open(output_registration + '.json', 'w') as registration_file:
+    print(json.dumps(competitor_information_wca, indent=4), file=registration_file)
 
 output_registration += 'Locations'
-with open(output_registration + '.txt', 'w') as registration_file:
-    print(competitors_per_location, file=registration_file)
+with open(output_registration + '.json', 'w') as registration_file:
+    print(json.dumps(competitors_per_location, indent=4), file=registration_file)
 
 # All registration information (for orga and delegates only)
 output_registration += 'Extended'
-with open(output_registration + '.txt', 'w') as registration_file:
-    print(competitors_per_location_extended, file=registration_file)
+with open(output_registration + '.json', 'w') as registration_file:
+    print(json.dumps(competitors_per_location_extended, indent=4), file=registration_file)
 
 output_json = json.dumps(competitors_per_location_extended, indent=4)
-with open(output_registration + '.json', 'w') as registration_file:
+with open(output_registration + '2.json', 'w') as registration_file:
     print(output_json, file=registration_file)
 
+# Output on terminal
 print('Locations:')
 for location in competitors_per_location:
     table = pandas.DataFrame(data=competitors_per_location[location])
