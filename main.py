@@ -84,7 +84,7 @@ for location in competitors_per_location:
 
 ### Write results to files
 # Public registration information
-output_registration = competition_name + '/' + competition_name_stripped + 'Registrations'
+output_registration = competition_name + '/competitors'
 with open(output_registration + '.json', 'w') as registration_file:
     print(json.dumps(competitor_information_wca, indent=4), file=registration_file)
 
