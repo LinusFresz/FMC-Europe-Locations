@@ -7,9 +7,11 @@ def get_results_from_wca_export(wca_ids, competitor_information):
 
     for person in competitor_information:
         single_result = get_result(person, single)
+        if single_result != 999:
+            single_result *= 100
         average_result = get_result(person, average)
 
-        person.update({'single': single_result, 'average': average_result})
+        person.update({'single': int(single_result), 'average': average_result})
     return competitor_information
 
 # Get a specific result

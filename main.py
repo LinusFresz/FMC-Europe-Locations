@@ -46,10 +46,14 @@ competitors_per_location = {}
 for competitor in competitor_information_wca:
     found_location = False
     for locations in registered_locations:
+        # Hack to replace location name to avoid renaming this location for all relevant registrations
+        competitor['comments'] = competitor['comments'].replace(ftfy.fix_text('Stork\u00f8benhavn'), ftfy.fix_text('Måløv'))
+        
         if ftfy.fix_text(competitor['comments']) == ftfy.fix_text(locations[1]):
             competitor['comments'] = locations[0] + ' - ' + competitor['comments']
             found_location = True
             break
+
     if not found_location:
         competitor['comments'] = 'unknown location - ' + competitor['comments']
     if competitor['comments'] not in competitors_per_location:
@@ -66,6 +70,17 @@ for location in competitors_per_location:
             emails.update({competitor['comments']: []})
         emails[competitor['comments']].append(competitor['mail'])
 
+competitor_list = []
+for competitor in competitor_information_wca:
+    competitor_list.append(competitor)
+
+competitor_list = sorted(competitor_list, key=lambda x:x['comments'])
+
+for competitor in competitor_list:
+    print(competitor['name'] + ',' + competitor['comments'] + ',' + competitor['country'] + ',' + competitor['dob'] + ',' + competitor['mail'] + ',' +  competitor['guests'])
+
+quit()
+
 competitors_per_location_extended = competitors_per_location
 
 secret_information = ['dob', 'gender', 'mail', 'role', 'guests']
@@ -73,14 +88,6 @@ for location in competitors_per_location:
     for competitor in competitors_per_location[location]:
         for key in secret_information:
             del competitor[key]
-
-'''
-for location in competitors_per_location:
-    print('')
-    print(location)
-    for competitor in competitors_per_location[location]:
-        print(competitor)
-'''
 
 ### Write results to files
 # Public registration information
@@ -102,6 +109,7 @@ with open(output_registration + '2.json', 'w') as registration_file:
     print(output_json, file=registration_file)
 
 # Output on terminal
+'''
 print('Locations:')
 for location in competitors_per_location:
     table = pandas.DataFrame(data=competitors_per_location[location])
@@ -119,3 +127,4 @@ table = table.fillna(' ')
 table = table[['personId', 'name', 'country', 'single', 'average', 'comments']]
 table.columns = ['WCA ID', 'Name', 'Country', 'Single', 'Mean', 'Location']
 print(table)
+'''

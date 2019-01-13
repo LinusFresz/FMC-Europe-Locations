@@ -41,8 +41,6 @@ def get_registrations_from_wcif(wca_json, countries):
                     'mail': email,
                     'role': competitor_role,
                     'guests': str(registrations['registration']['guests']),
-                    #'registered_events': registered_events,
-                    'registration_id': registration_id,
                     'comments': comments
                     }
 
