@@ -79,8 +79,6 @@ competitor_list = sorted(competitor_list, key=lambda x:x['comments'])
 for competitor in competitor_list:
     print(competitor['name'] + ',' + competitor['comments'] + ',' + competitor['country'] + ',' + competitor['dob'] + ',' + competitor['mail'] + ',' +  competitor['guests'])
 
-quit()
-
 competitors_per_location_extended = competitors_per_location
 
 secret_information = ['dob', 'gender', 'mail', 'role', 'guests']
