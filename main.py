@@ -49,6 +49,10 @@ for competitor in competitor_information_wca:
         # Hack to replace location name to avoid renaming this location for all relevant registrations
         competitor['comments'] = competitor['comments'].replace(ftfy.fix_text('Stork\u00f8benhavn'), ftfy.fix_text('Måløv'))
         
+        competitor['comments'] = competitor['comments'].replace(ftfy.fix_text('East Midlands'), ftfy.fix_text('Ely'))
+        
+        competitor['comments'] = competitor['comments'].replace(ftfy.fix_text('Gothenburg'), ftfy.fix_text('Lerum'))
+        
         if ftfy.fix_text(competitor['comments']) == ftfy.fix_text(locations[1]):
             competitor['comments'] = locations[0] + ' - ' + competitor['comments']
             found_location = True
