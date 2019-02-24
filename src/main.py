@@ -11,16 +11,20 @@ import csv
 import ftfy
 import pandas
 
+try:
+    os.chdir('src/')
+    os.chdir('..')
+except FileNotFoundError:
+    os.chdir('..')
+
 # Self made modules
-from db import WCA_Database
 from wca_api import get_registrations_from_wcif, wca_registration, get_wca_info, create_competition_folder
-from wca_db import get_results_from_wca_export
 
 # Hard coded competition name, because script will only be used for FMC Europe XY
 competition_name = "FMCEurope2019"
 competition_name_stripped = competition_name.strip()
 
-registered_locations = list(csv.reader(open('locations.txt', 'r'), delimiter='\t'))
+registered_locations = list(csv.reader(open('src/data/locations.txt', 'r'), delimiter='\t'))
 
 # WCA login data (if not stored in static/config.py)
 wca_password, wca_mail = wca_registration(True)
@@ -32,13 +36,13 @@ competition_wcif_file = get_wca_info(wca_password, wca_mail, competition_name, c
 wca_json = json.loads(competition_wcif_file)
 
 # Get all countries from WCA export
-countries = WCA_Database.query("SELECT * FROM Countries").fetchall()
+with open('src/data/WCA_export_Countries.tsv', 'r') as country_file:
+        countries = list(csv.reader(country_file, delimiter='\t'))[1:]
 
 # Get competitor list with registration information from WCIF
 competitor_information_wca, wca_ids = get_registrations_from_wcif(wca_json, countries)
 
 # Add results for each competitor from WCA export
-competitor_information_wca = get_results_from_wca_export(wca_ids, competitor_information_wca)
 competitor_information_wca = sorted(sorted(sorted(competitor_information_wca, key=lambda x:x['name']), key=lambda x:x['single'] if x['single'] > 0 else 100), key=lambda x:x['average'] if x['average'] > 0 else 100)
 
 # Group competitors by registered location (information given by registration information)
@@ -110,8 +114,8 @@ output_json = json.dumps(competitors_per_location_extended, indent=4)
 with open(output_registration + '2.json', 'w') as registration_file:
     print(output_json, file=registration_file)
 
-# Output on terminal
 '''
+# Output on terminal
 print('Locations:')
 for location in competitors_per_location:
     table = pandas.DataFrame(data=competitors_per_location[location])

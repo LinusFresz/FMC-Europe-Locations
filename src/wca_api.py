@@ -4,9 +4,7 @@ import sys
 import requests
 import json
 import getpass
-
-from static import config as credentials
-
+    
 ### WCA WCIF
 # Get competitor information: name, WCA ID, date of birth, gender, country, competition roles (organizer, delegate) and events registered for
 def get_registrations_from_wcif(wca_json, countries):
@@ -19,19 +17,27 @@ def get_registrations_from_wcif(wca_json, countries):
         comments = 'DummyLocation'
         
         for country in countries:
-            if country['iso2'] == registrations['countryIso2']:
-                comp_country = country['id']
+            if country[3] == registrations['countryIso2']:
+                comp_country = country[0]
         if registrations['roles']:
             for role in registrations['roles']:
                 competitor_role = ''.join([competitor_role, role.replace('delegate', 'WCA DELEGATE').upper(), ','])
             competitor_role = competitor_role[:-1]
+            
+        for event_records in registrations['personalBests']:
+            if (event_records['eventId'] == '333fm'):
+                if(event_records['type'] == 'single'):
+                    single = event_records['best']
+                else:
+                    average = round(event_records['best'] / 100, 2)
+                  
         if registrations['registration']:
             if registrations['registration']['comments']:
                 comments = registrations['registration']['comments']
             for competitor_events in registrations['registration']['eventIds']:
                 registered_events += (competitor_events,)
             email = registrations['email']
-
+            
             information = {
                     'name': registrations['name'].split(' (')[0].strip(),
                     'personId': registrations['wcaId'],
@@ -41,7 +47,9 @@ def get_registrations_from_wcif(wca_json, countries):
                     'mail': email,
                     'role': competitor_role,
                     'guests': str(registrations['registration']['guests']),
-                    'comments': comments
+                    'comments': comments,
+                    'single': single,
+                    'average': average
                     }
 
             wca_ids += (registrations['wcaId'],)
@@ -50,17 +58,14 @@ def get_registrations_from_wcif(wca_json, countries):
             if registrations['registration']['status'] == 'accepted':
                 competitor_information_wca.append(information)
                 registration_id += 1
-            
+
     return (competitor_information_wca, wca_ids)
 
 # Get user input for wca login (mail-address, password and competition name)
 # All try-except cases were implemented for simple development and will not change the normal user input
 def wca_registration(new_creation):
     while True:
-        try:
-            wca_mail = credentials.mail_address
-        except:
-            wca_mail = input('Your WCA mail address: ')
+        wca_mail = input('Your WCA mail address: ')
         # Validation if correct mail address was entered
         if '@' not in wca_mail:
             if wca_mail[:4].isdigit() and wca_mail[8:].isdigit():
@@ -69,10 +74,7 @@ def wca_registration(new_creation):
                 print('Please enter valid email address.')
         else:
             break
-    try:
-        wca_password = credentials.password
-    except:
-        wca_password = getpass.getpass('Your WCA password: ')
+    wca_password = getpass.getpass('Your WCA password: ')
 
     return (wca_password, wca_mail)
 

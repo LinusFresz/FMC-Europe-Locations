@@ -1,0 +1,33 @@
+Croatia	Zagreb
+Denmark	Måløv
+Denmark	Odense
+Estonia	Tartu
+Finland	Helsinki
+France	Lyon
+Germany	Dortmund
+Germany	Regensburg
+Greece	Athens
+Hungary	Budapest
+Italy	Monterotondo
+Italy	Milano
+Italy	Rovigo
+Latvia	Rīga
+Lithuania	Vilnius
+Netherlands	Zeewolde
+Norway	Trondheim
+Poland	Dąbrowa Górnicza
+Poland	Gdańsk
+Romania	Botoşani
+Romania	Bucharest
+Russia	Belgorod
+Russia	Chelyabinsk
+Slovenia	Maribor
+Turkey	İstanbul
+Ukraine	Dnepr
+United Kingdom	London
+United Kingdom	Guildford
+United Kingdom	Ely
+Switzerland	Zürich
+Sweden	Lerum
+Sweden	Tullinge
+Spain	Madrid
